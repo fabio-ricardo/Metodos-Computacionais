@@ -1,0 +1,43 @@
+﻿@model WebApplication1.Models.FormulaInputModel
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post))
+{
+    <div class="jumbotron">
+        <h1>Integral Calculator</h1>
+        <br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Metodo, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EnumDropDownListFor(x => x.Metodo, "--Selecione-- ", new { @class = "required" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Funcao, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.Funcao, new { @class = "required col-md-8" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.A, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.A, new { @class = "required col-md-8" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.B, new { @class = "control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.B, new { @class = "required col-md-4" })
+                </div>
+            </div>
+        </div>
+
+
+       
+
+        <button class="btn btn-primary" type="submit">Calcular</button>
+    </div>
+}
