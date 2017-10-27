@@ -11,6 +11,7 @@ namespace WebApplication1.Metodos
     {
         public double EfetuarCalculo(FormulaInputModel input)
         {
+            //Faz reflection para executar a fórmula que o usuário escolheu
             Type classe = Type.GetType("WebApplication1.Metodos.MetodosHub");
             MethodInfo metodoCalculo = classe.GetMethod(input.Metodo.ToString());
             return (double)metodoCalculo.Invoke(this, new object[] { input });
@@ -18,45 +19,96 @@ namespace WebApplication1.Metodos
 
         public double Trapezio(FormulaInputModel input)
         {
-            //n=1
-            var h = (input.B - input.A);
-            var result = h / 2 * (f(input.A) + f(input.B));
-            return result;
+            var n = 0;
+            float h = 0;
+            double resultAnterior = 0;
+            double resultAtual = 0;
+            do
+            {
+                n++;
+                h = (input.B - input.A) / n;
+                resultAnterior = resultAtual;
+                resultAtual = 0;
+                for (int i = 1; i < n; i++)
+                {
+                    resultAtual += 2*f(input.A + i*h);
+                }
+                resultAtual = h /2 * (input.A + resultAtual + input.B);
+            } while ((resultAtual - resultAnterior) > input.Erro);
+
+            return resultAtual;
         }
 
         public double Simpson(FormulaInputModel input)
         {
-            //n=2
-            var h = (input.B - input.A )/ 2;
-            var x1 = input.A + h;
-            var result = h/3 * (f(input.A) + 4*f(x1) + f(input.B));
-            return result;
+            var n = 1;
+            float h = 0;
+            double resultAnterior = 0;
+            double resultAtual = 0;
+            do
+            {
+                n++;
+                h = (input.B - input.A) / n;
+                resultAnterior = resultAtual;
+                resultAtual = 0;
+                for (int i = 1; i < n; i++)
+                {
+                    resultAtual += f(input.A + i * h) * (i % 2 == 0 ? 2 : 4);
+                }
+                resultAtual = h / 3 * (input.A + resultAtual + input.B);
+            } while ((resultAtual - resultAnterior) > input.Erro);
+
+            return resultAtual;
         }
 
         public double Simpson_3_8(FormulaInputModel input)
         {
-            //n=3   
-            var h = (input.B - input.A) / 3;
-            var x1 = input.A + h;
-            var x2 = input.A + 2*h;
-            var result = 3*h/8 * (f(input.A) + 3*f(x1) + 3*f(x2) + f(input.B));
-            return result;
+            var n = 2;
+            float h = 0;
+            double resultAnterior = 0;
+            double resultAtual = 0;
+            do
+            {
+                n++;
+                h = (input.B - input.A) / n;
+                resultAnterior = resultAtual;
+                resultAtual = 0;
+                for (int i = 1; i < n; i++)
+                {
+                    resultAtual += f(input.A + i * h) * (i % 3 == 0 ? 2 : 3);
+                }
+                resultAtual = 3 * h / 8 * (input.A + resultAtual + input.B);
+            } while ((resultAtual - resultAnterior) > input.Erro);
+
+            return resultAtual;
         }
 
         public double Newton_Cotes(FormulaInputModel input)
-        {
-            //n=4 
-            var h = (input.B - input.A) / 4;
-            var x1 = input.A + h;
-            var x2 = input.A + 2 * h;
-            var x3 = input.A + 3 * h;
-            var result = 2*h/45 * (7*f(input.A) + 32*f(x1) + 12*f(x2) + 32*f(x3) + 7*f(input.B));
-            return result;
+        { 
+            //var result = 2 * h / 45 * (7 * f(input.A) + 32 * f(x1) + 12 * f(x2) + 32 * f(x3) + 7 * f(input.B));
+            var n = 3;
+            float h = 0;
+            double resultAnterior = 0;
+            double resultAtual = 0;
+            do
+            {
+                n++;
+                h = (input.B - input.A) / n;
+                resultAnterior = resultAtual;
+                resultAtual = 0;
+                for (int i = 1; i < n; i++)
+                {
+                    resultAtual += f(input.A + i * h) * (i % 3 == 0 ? 2 : 3);
+                }
+                resultAtual = 2*h/45 *(7*input.A + resultAtual + 7*input.B);
+            } while ((resultAtual - resultAnterior) > input.Erro);
+
+            return resultAtual;
         }
 
         public double f(float x)
         {
-            return Math.Cos(x);
+            return Math.Exp(x);
         }
     }
 }

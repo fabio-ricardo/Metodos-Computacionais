@@ -27,7 +27,7 @@ namespace WebApplication1.Controllers
                 result.Resultado = new MetodosHub().EfetuarCalculo(model);
                 //Workaround por conta de problema na passagem de model contendo model
                 TempData["re"] = result;
-                return View("Resultado");
+                return RedirectToAction("Resultado");
             }
             return View("Index", model);
         }
