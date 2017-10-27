@@ -18,18 +18,23 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Index(FormulaInputModel model)
         {
-            var result = new ResultadoModel()
+            if (ModelState.IsValid)
             {
-                FormulaInput = model
-            };
-            result.Resultado = new MetodosHub().EfetuarCalculo(model);
-            TempData["re"] = result;
-            return RedirectToAction("Resultado");
+                var result = new ResultadoModel()
+                {
+                    FormulaInput = model
+                };
+                result.Resultado = new MetodosHub().EfetuarCalculo(model);
+                //Workaround por conta de problema na passagem de model contendo model
+                TempData["re"] = result;
+                return View("Resultado");
+            }
+            return View("Index", model);
         }
 
         public ActionResult Resultado()
         {
-            return View( (ResultadoModel) TempData["re"]);
+            return View((ResultadoModel) TempData["re"]);
         }
 
     }

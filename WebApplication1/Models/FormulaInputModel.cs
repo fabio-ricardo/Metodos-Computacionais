@@ -18,11 +18,13 @@ namespace WebApplication1.Models
 
         [Required]
         [Display(Name = "Intervalo A")]
-        public int A { get; set; }
+        public float A { get; set; }
 
         [Required]
         [Display(Name = "Intervalo B")]
-        public int B { get; set; }
+        public float B { get; set; }
+        [Required]
+        public double Erro { get; set; }
 
     }
 }
