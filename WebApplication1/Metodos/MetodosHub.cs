@@ -4,14 +4,19 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using WebApplication1.Models;
+using System.CodeDom.Compiler;
+using Microsoft.CSharp;
+using WebApplication1.Funcao;
 
 namespace WebApplication1.Metodos
 {
     public class MetodosHub
     {
+        private string Funcao { get; set; }
         public double EfetuarCalculo(FormulaInputModel input)
         {
             //Faz reflection para executar a fórmula que o usuário escolheu
+            Funcao = FuncaoHelper.Clean(input.Funcao);
             Type classe = Type.GetType("WebApplication1.Metodos.MetodosHub");
             MethodInfo metodoCalculo = classe.GetMethod(input.Metodo.ToString());
             return (double)metodoCalculo.Invoke(this, new object[] { input });
@@ -31,9 +36,9 @@ namespace WebApplication1.Metodos
                 resultAtual = 0;
                 for (int i = 1; i < n; i++)
                 {
-                    resultAtual += 2*f(input.A + i*h);
+                    resultAtual +=  F(input.A + i * h);
                 }
-                resultAtual = h /2 * (input.A + resultAtual + input.B);
+                resultAtual = (h/2) * (input.A + 2*resultAtual + input.B);
             } while ((resultAtual - resultAnterior) > input.Erro);
 
             return resultAtual;
@@ -53,9 +58,9 @@ namespace WebApplication1.Metodos
                 resultAtual = 0;
                 for (int i = 1; i < n; i++)
                 {
-                    resultAtual += f(input.A + i * h) * (i % 2 == 0 ? 2 : 4);
+                    resultAtual += F(input.A + i * h) * (i % 2 == 0 ? 2 : 4);
                 }
-                resultAtual = h / 3 * (input.A + resultAtual + input.B);
+                resultAtual = (h/3) * (input.A + resultAtual + input.B);
             } while ((resultAtual - resultAnterior) > input.Erro);
 
             return resultAtual;
@@ -75,16 +80,16 @@ namespace WebApplication1.Metodos
                 resultAtual = 0;
                 for (int i = 1; i < n; i++)
                 {
-                    resultAtual += f(input.A + i * h) * (i % 3 == 0 ? 2 : 3);
+                    resultAtual += F(input.A + i * h) * (i % 3 == 0 ? 2 : 3);
                 }
-                resultAtual = 3 * h / 8 * (input.A + resultAtual + input.B);
+                resultAtual = (3*h/8) * (input.A + resultAtual + input.B);
             } while ((resultAtual - resultAnterior) > input.Erro);
 
             return resultAtual;
         }
 
         public double Newton_Cotes(FormulaInputModel input)
-        { 
+        {
             //var result = 2 * h / 45 * (7 * f(input.A) + 32 * f(x1) + 12 * f(x2) + 32 * f(x3) + 7 * f(input.B));
             var n = 3;
             float h = 0;
@@ -98,17 +103,19 @@ namespace WebApplication1.Metodos
                 resultAtual = 0;
                 for (int i = 1; i < n; i++)
                 {
-                    resultAtual += f(input.A + i * h) * (i % 3 == 0 ? 2 : 3);
+                    resultAtual += F(input.A + i * h) * (i % 2 == 0 ? 32 : 12);
                 }
-                resultAtual = 2*h/45 *(7*input.A + resultAtual + 7*input.B);
+                resultAtual = (2*h/45) * (7 * input.A + resultAtual + 7 * input.B);
             } while ((resultAtual - resultAnterior) > input.Erro);
 
             return resultAtual;
         }
 
-        public double f(float x)
+        public double F(double x)
         {
-            return Math.Exp(x);
+            var r = FuncaoHelper.Calculate(Funcao, x);
+            return r == null? throw new Exception(): (double) r;
         }
     }
 }
+

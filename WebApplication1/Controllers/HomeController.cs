@@ -18,7 +18,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Index(FormulaInputModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && model.Metodo != 0)
             {
                 var result = new ResultadoModel()
                 {
