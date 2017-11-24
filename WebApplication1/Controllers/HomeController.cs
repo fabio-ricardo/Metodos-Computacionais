@@ -10,13 +10,18 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
+        public ActionResult CalculoIntegral()
+        {
+            return View();
+        }
+
         public ActionResult Index()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Index(FormulaInputModel model)
+        public ActionResult CalculoIntegral(FormulaInputModel model)
         {
             if (ModelState.IsValid && model.Metodo != 0)
             {
@@ -29,12 +34,41 @@ namespace WebApplication1.Controllers
                 TempData["re"] = result;
                 return RedirectToAction("Resultado");
             }
-            return View("Index", model);
+            return View("CalculoIntegral", model);
         }
 
         public ActionResult Resultado()
         {
-            return View((ResultadoModel) TempData["re"]);
+            return View((ResultadoModel)TempData["re"]);
+        }
+
+        public ActionResult ResultadoZeroFuncao()
+        {
+            return View((ResultadoZeroFuncaoModel)TempData["re"]);
+        }
+        public ActionResult ZeroFuncao()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult ZeroFuncao(FormulaInputZeroFuncaoModel model)
+        {
+            if (ModelState.IsValid && model.Metodo != 0
+                && (model.Metodo != ZeroFuncaoEnum.Posicao_Falsa ||
+                model.Metodo == ZeroFuncaoEnum.Posicao_Falsa && !string.IsNullOrEmpty(model.Derivada))
+                && (model.B != null ||  model.Metodo == ZeroFuncaoEnum.Posicao_Falsa))
+            {
+                var result = new ResultadoZeroFuncaoModel()
+                {
+                    FormulaInput = model
+                };
+                result.Resultado = new MetodosHub().ZerarFuncao(model);
+                //Workaround por conta de problema na passagem de model contendo model
+                TempData["re"] = result;
+                return RedirectToAction("ResultadoZeroFuncao");
+            }
+            return View("ZeroFuncao", model);
         }
 
     }
