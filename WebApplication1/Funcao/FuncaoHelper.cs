@@ -13,8 +13,9 @@ namespace WebApplication1.Funcao
                 //Workaround pra quando as funções matemáticas contêm 'x' no nome
                 Expression e = new Expression(funcao
                     .Replace("x", x.ToString())
-                    .Replace("X", "x"));
-                return (double)e.Evaluate();
+                    .Replace("X", "x") + " * 1.0");
+                var a = (double)e.Evaluate();
+                return a;
             }
             catch
             {

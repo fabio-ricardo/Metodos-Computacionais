@@ -150,7 +150,7 @@ namespace WebApplication1.Metodos
                 fb = F(b);
                 if (fa == 0) return a;
                 if (fb == 0) return b;
-                x = (a * fb - b * fa) / (fb - fa);
+                x = (a * fb - b * fa) / ((fb - fa) > 0? (fb - fa) : 1);
                 a = ((x > 0 && a > 0) || (x < 0 && a < 0)) ? x : a;
                 b = ((x > 0 && b > 0) || (b < 0 && b < 0)) ? x : b;
             } while (F(x) > input.Erro);
@@ -169,7 +169,7 @@ namespace WebApplication1.Metodos
                 f = F(x0);
                 flinha = F_linha(x0, derivada);
                 if (f == 0) return x0;
-                x = x0 - (f/flinha);
+                x = x0 - (f/ (flinha > 0? flinha : 1));
                 x0 = x;
                 LIMITE--;
             } while (F(x) > input.Erro && LIMITE > 0);
@@ -189,7 +189,7 @@ namespace WebApplication1.Metodos
                 fx1 = F(x1);
                 if (fx0 == 0) return x0;
                 if (fx1 == 0) return x1;
-                x = (x0 * fx1 - x1 * fx0) / (fx1 - fx0);
+                x = (x0 * fx1 - x1 * fx0) / ((fx1 - fx0) > 0 ? (fx1 - fx0) : 1);
                 x0 = x1;
                 x1 = x;
                 LIMITE--;

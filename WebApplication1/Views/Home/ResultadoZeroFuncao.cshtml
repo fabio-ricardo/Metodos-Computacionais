@@ -5,41 +5,45 @@
         <br />
         <div class="form-horizontal">
             <div class="form-group">
-                @Html.LabelFor(model => model.FormulaInput.Metodo, new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.FormulaInput.Metodo, new { @class = "required control-label col-md-4" })
                 <div class="col-md-8">
                     @Html.EnumDropDownListFor(x => x.FormulaInput.Metodo, "--Selecione-- ", new { @class = "required", @disabled = "disabled" })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.Label("f(x)=", new { @class = "control-label col-md-4" })
+                @Html.Label("f(x)=", new { @class = "required control-label col-md-4" })
                 <div class="col-md-8">
-                    @Html.EditorFor(x => x.FormulaInput.Funcao,  new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
+                    @Html.EditorFor(x => x.FormulaInput.Funcao, new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
+                </div>
+            </div>
+
+            <div id="derivada" class="form-group">
+                @Html.Label("f'(x)=", new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EditorFor(x => x.FormulaInput.Derivada, new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
                 </div>
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.FormulaInput.A, new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.FormulaInput.A, new { @class = "required control-label col-md-4", @id = "labelAText" })
                 <div class="col-md-8">
                     @Html.EditorFor(x => x.FormulaInput.A, new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
                 </div>
             </div>
 
-            <div class="form-group">
-                @Html.LabelFor(model => model.FormulaInput.B, new { @class = "control-label col-md-4" })
+            <div id="labelB" class="form-group">
+                @Html.LabelFor(model => model.FormulaInput.B, new { @class = "required control-label col-md-4", @id = "labelBText" })
                 <div class="col-md-8">
-                    @Html.EditorFor(x => x.FormulaInput.B, new  { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
+                    @Html.EditorFor(x => x.FormulaInput.B, new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
                 </div>
             </div>
-
-
             <div class="form-group">
-                @Html.LabelFor(model => model.FormulaInput.Erro, new { @class = "control-label col-md-4" })
+                @Html.LabelFor(model => model.FormulaInput.Erro, new { @class = "required control-label col-md-4" })
                 <div class="col-md-8">
                     @Html.EditorFor(x => x.FormulaInput.Erro, new { htmlAttributes = new { @class = "required col-md-4", @disabled = "disabled" } })
                 </div>
             </div>
-
             <div class="form-group">
                 @Html.LabelFor(model => model.Resultado, new { @class = "control-label col-md-4" })
                 <div class="col-md-8">
@@ -52,3 +56,34 @@
         <a class="btn btn-primary" href="@Url.Action("ZeroFuncao", "Home")">Voltar</a> 
 
     </div>
+<script type="text/javascript" src="~/Scripts/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        
+        //$('#derivada').hide();
+        $('#FormulaInput_Metodo').change(function () {
+            var num = $(this).find('option:selected').val();
+            if (num < 3) {
+                $('#labelAText').text("Intervalo A");
+                $('#labelBText').text("Intervalo B");
+            } else {
+                $('#labelAText').text("X0");
+                $('#labelBText').text("X1");
+
+            }
+            console.log(num);
+            if (num == 3) {
+                $('#derivada').show();
+                $('#labelB').hide();
+            } else {
+                $('#derivada').hide();
+                $('#labelB').show();
+            }
+        });
+        $('#FormulaInput_Metodo').change();
+
+    });
+
+
+
+</script>

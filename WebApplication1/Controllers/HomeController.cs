@@ -55,9 +55,8 @@ namespace WebApplication1.Controllers
         public ActionResult ZeroFuncao(FormulaInputZeroFuncaoModel model)
         {
             if (ModelState.IsValid && model.Metodo != 0
-                && (model.Metodo != ZeroFuncaoEnum.Posicao_Falsa ||
-                model.Metodo == ZeroFuncaoEnum.Posicao_Falsa && !string.IsNullOrEmpty(model.Derivada))
-                && (model.B != null ||  model.Metodo == ZeroFuncaoEnum.Posicao_Falsa))
+                && (model.Metodo != ZeroFuncaoEnum.Newton_Ralphson || 
+                (model.B == null && !string.IsNullOrEmpty(model.Derivada))))
             {
                 var result = new ResultadoZeroFuncaoModel()
                 {
