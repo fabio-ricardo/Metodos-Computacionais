@@ -1,0 +1,34 @@
+﻿@model WebApplication1.Models.ResultadoInterpolacaoModel
+
+    <div class="jumbotron">
+        <h1>Interpolação</h1>
+        <br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.InterpolacaoInput.Metodo, new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EnumDropDownListFor(x => x.InterpolacaoInput.Metodo, "--Selecione-- ", new { @class = "required", @disabled = "disabled" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.InterpolacaoInput.PontosString, new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(x => x.InterpolacaoInput.PontosString, new { @class = "required col-md-12", @disabled = "disabled" })
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Resultado, new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(x => x.Resultado, new { @class = "required col-md-12", @style= "width:500px; height:500px", @disabled="disabled"})
+                </div>
+            </div>
+
+
+      </div>
+
+        <a class="btn btn-primary" href="@Url.Action("ZeroFuncao", "Home")">Voltar</a> 
+
+    </div>

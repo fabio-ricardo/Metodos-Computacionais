@@ -148,6 +148,9 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Metodos\MetodosHub.cs" />
+    <Compile Include="Models\InterpolacaoModel.cs" />
+    <Compile Include="Models\InterpolacaoEnum.cs" />
+    <Compile Include="Models\ResultadoInterpolacaoModel.cs" />
     <Compile Include="Models\FormulaInputZeroFuncaoModel.cs" />
     <Compile Include="Models\ResultadoZeroFuncaoModel.cs" />
     <Compile Include="Models\MetodoEnum.cs" />
@@ -211,6 +214,8 @@
     <Content Include="Views\Home\CalculoIntegral.cshtml" />
     <Content Include="Views\Home\ZeroFuncao.cshtml" />
     <Content Include="Views\Home\ResultadoZeroFuncao.cshtml" />
+    <Content Include="Views\Home\Interpolacao.cshtml" />
+    <Content Include="Views\Home\ResultadoInterpolacao.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

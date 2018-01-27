@@ -70,5 +70,33 @@ namespace WebApplication1.Controllers
             return View("ZeroFuncao", model);
         }
 
+        public ActionResult ResultadoInterpolacao()
+        {
+            return View((ResultadoInterpolacaoModel)TempData["re"]);
+        }
+        public ActionResult Interpolacao()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Interpolacao(InterpolacaoModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                model.Pontos = model.PontosString.Replace(" ", "").Replace("(","").Replace(")","").Split(',');
+
+                var result = new ResultadoInterpolacaoModel()
+                {
+                    InterpolacaoInput = model
+                };
+                result.Resultado = new MetodosHub().InterpolarPontos(model);
+                //Workaround por conta de problema na passagem de model contendo model
+                TempData["re"] = result;
+                return RedirectToAction("ResultadoInterpolacao");
+            }
+            return View("Interpolacao", model);
+        }
+
     }
 }

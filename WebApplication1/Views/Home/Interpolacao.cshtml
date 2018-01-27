@@ -1,0 +1,28 @@
+﻿@model WebApplication1.Models.InterpolacaoModel
+
+@using (Html.BeginForm("Interpolacao", "Home", FormMethod.Post))
+{
+    <div class="jumbotron">
+        <h1>Interpolação</h1>
+        <br />
+        <div class="form-horizontal">
+            <div class="form-group">
+                @Html.LabelFor(model => model.Metodo, new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.EnumDropDownListFor(x => x.Metodo, "--Selecione-- ")
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.PontosString, new { @class = "required control-label col-md-4" })
+                <div class="col-md-8">
+                    @Html.TextAreaFor(x => x.PontosString, new { @placeholder = "Ex:(1,1),(2,2),...(n,m)" })
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="float: right;" type="submit">Calcular</button>
+            <a class="btn btn-primary" href="@Url.Action("Index", "Home")">Voltar</a>
+
+        </div>
+    </div>
+}
