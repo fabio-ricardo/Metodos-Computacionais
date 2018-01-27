@@ -209,24 +209,29 @@ namespace WebApplication1.Metodos
 
         public string Lagrange(InterpolacaoModel input)
         {
-            var funcao = "f(x)=";
-            for (int i = 0; i < input.Pontos.Length; i += 2)
+            var n = input.Pontos.Length / 2;
+            var funcao = "P"+n.ToString()+"(x)= ";
+            string[] L = new string[n];
+            for (int i = 0; i < input.Pontos.Length; i+=2)
             {
-
+                var den = 1.0;
                 var num = "";
-                var den = "";
-
-                for (int j = 0; j < input.Pontos.Length; j += 2)
+                for (int j = 0; j < input.Pontos.Length; j+=2)
                 {
                     if (i != j)
                     {
-                        num += "* (x - " + input.Pontos[j] + ")";
-                        den += "* (" + (double.Parse(input.Pontos[i]) - double.Parse(input.Pontos[j])).ToString() + ")";
-
+                        num += " (x - (" + input.Pontos[j] + ")) *";
+                        den *= (float.Parse(input.Pontos[i]) - float.Parse(input.Pontos[j]));
                     }
                 }
-
-                funcao += "(" + num + ")/(" + den + ")";
+                L[i/2] = "L"+(i/2).ToString()+"(x) = (" + num.Remove(num.Length-1) + ")/(" + den.ToString() +")";
+                funcao += input.Pontos[i]+"*L"+ (i / 2).ToString() + "(x) + ";
+            }
+            funcao = funcao.Remove(funcao.Length - 2);
+      
+            foreach (var item in L)
+            {
+                funcao += item + "\n";
             }
             return funcao;
 
@@ -237,7 +242,7 @@ namespace WebApplication1.Metodos
             for (int i = 2; i < input.Pontos.Length; i += 2)
             {
                 var funcao = "S" + (i / 2).ToString() + "(x) = (" + input.Pontos[i - 1] + "*(" + input.Pontos[i] + " - x)" +
-                    " + " + input.Pontos[i + 1] + "*(x - " + input.Pontos[i - 2] + "))/(" + (double.Parse(input.Pontos[i]) - double.Parse(input.Pontos[i - 2]))
+                    " + " + input.Pontos[i + 1] + "*(x - (" + input.Pontos[i - 2] + ")))/(" + (double.Parse(input.Pontos[i]) - double.Parse(input.Pontos[i - 2]))
                     .ToString() + ")";
                 result += funcao + "\n";
             }
@@ -271,8 +276,8 @@ namespace WebApplication1.Metodos
                 }
                 sumA = 2.0/n * sumA;
                 sumB = 2.0/n * sumB;
-                As[i] = sumA.ToString();
-                Bs[i] = sumB.ToString();
+                As[i] = ((float)Math.Round(sumA * 100f) / 100f).ToString();
+                Bs[i] = ((float)Math.Round(sumB * 100f) / 100f).ToString();
             }
 
             var imax = m % 2 == 0 ? m - 1 : m;
