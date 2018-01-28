@@ -82,7 +82,7 @@ namespace WebApplication1.Controllers
         [HttpPost]
         public ActionResult Interpolacao(InterpolacaoModel model)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid &&  model.Metodo != 0)
             {
                 model.Pontos = model.PontosString.Replace(" ", "").Replace("(","").Replace(")","").Split(',');
 

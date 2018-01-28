@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Web;
 using WebApplication1.Models;
-using System.CodeDom.Compiler;
-using Microsoft.CSharp;
 using WebApplication1.Funcao;
+using System.Diagnostics;
 
 namespace WebApplication1.Metodos
 {
@@ -225,7 +223,7 @@ namespace WebApplication1.Metodos
                     }
                 }
                 L[i/2] = "L"+(i/2).ToString()+"(x) = (" + num.Remove(num.Length-1) + ")/(" + den.ToString() +")";
-                funcao += input.Pontos[i]+"*L"+ (i / 2).ToString() + "(x) + ";
+                funcao += input.Pontos[i+1]+"*L"+ (i / 2).ToString() + "(x) + ";
             }
             funcao = funcao.Remove(funcao.Length - 2);
       
@@ -236,6 +234,7 @@ namespace WebApplication1.Metodos
             return funcao;
 
         }
+
         public string Spline(InterpolacaoModel input)
         {
             var result = "";
@@ -248,10 +247,40 @@ namespace WebApplication1.Metodos
             }
             return result;
         }
+
+      
         public string Newton(InterpolacaoModel input)
         {
-            return "";
+            var n = input.Pontos.Length / 2;
+            var funcao = "P"+n.ToString()+"(x) = ";
+           
+            var vet = new List<int>();
+            var mult = "";
+            vet.Add(0);
+            funcao += DiferencaDividida(vet, input.Pontos).ToString();
+            for (int i = 0; i < input.Pontos.Length-2; i+=2)
+            {
+                vet.Add(i + 2);
+                mult += "* (x - (" + input.Pontos[i] +")) ";
+                funcao += " + " + ((float)Math.Round(DiferencaDividida(vet, input.Pontos) * 100f) / 100f).ToString() + mult;
+            }
+
+            return funcao;
         }
+
+        public double DiferencaDividida(IEnumerable<int> v, string[] pontos)
+        {
+            if (v.Count() <= 1)
+            {
+                return double.Parse(pontos[v.ElementAt(0)+1]);
+            }
+
+            return (DiferencaDividida((v.Count() == 2 ? new List<int> { v.ElementAt(1) } : v.Skip(1).Take(v.Count() -1)), pontos) 
+                  - DiferencaDividida((v.Count() == 2 ? new List<int> { v.ElementAt(0) } : v.Take(v.Count() - 1)), pontos))
+                / (double.Parse(pontos[v.Last()]) - double.Parse(pontos[v.First()]));
+
+        }
+
         public string Trigonometrica(InterpolacaoModel input)
         {
             var n = input.Pontos.Length / 2;
@@ -261,6 +290,7 @@ namespace WebApplication1.Metodos
             for (int i = 0; i < n; i++)
             {
                 xk[i] = (float) (i * 2.0 * Math.PI) / n;
+
             }
 
             string[] As = new string[(int)m+1];
@@ -271,11 +301,12 @@ namespace WebApplication1.Metodos
                 var sumB = 0.0;
                 for (int j = 0; j < n; j++)
                 {
-                    sumA += float.Parse(input.Pontos[2 * j + 1]) * Math.Sin(j * xk[j]);
-                    sumB += float.Parse(input.Pontos[2 * j + 1]) * Math.Cos(j * xk[j]);
+                    sumA += float.Parse(input.Pontos[2 * j + 1]) * Math.Cos(i * xk[j]);
+                    sumB += float.Parse(input.Pontos[2 * j + 1]) * Math.Sin(i * xk[j]);
                 }
                 sumA = 2.0/n * sumA;
                 sumB = 2.0/n * sumB;
+
                 As[i] = ((float)Math.Round(sumA * 100f) / 100f).ToString();
                 Bs[i] = ((float)Math.Round(sumB * 100f) / 100f).ToString();
             }
@@ -285,7 +316,7 @@ namespace WebApplication1.Metodos
             {
                 result += " (" + As[i] + "*Cos(" + i.ToString() + "*x) + " + Bs[i] + "*Sen(" + i.ToString() + "*x)) +";
             }
-            result = (double.Parse(As[0]) / 2).ToString() + "[" + result.Remove(result.Length-1)+"]";
+            result = (double.Parse(As[0]) / 2).ToString() + " + [" + result.Remove(result.Length-1)+"]";
             if (m % 2 == 0)
             {
                 result = result + " + "+(double.Parse(As[(int)m]) / 2).ToString() + "*Cos("+ m.ToString() +"*x)";
