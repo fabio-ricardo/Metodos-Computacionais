@@ -5,6 +5,7 @@ using System.Reflection;
 using WebApplication1.Models;
 using WebApplication1.Funcao;
 using System.Diagnostics;
+using PolyLib;
 
 namespace WebApplication1.Metodos
 {
@@ -213,16 +214,16 @@ namespace WebApplication1.Metodos
             for (int i = 0; i < input.Pontos.Length; i+=2)
             {
                 var den = 1.0;
-                var num = "";
+                var num = new Polynomial(1.0);
                 for (int j = 0; j < input.Pontos.Length; j+=2)
                 {
                     if (i != j)
                     {
-                        num += " (x - (" + input.Pontos[j] + ")) *";
+                        num *= new Polynomial(0, 1.0) - new Polynomial(double.Parse(input.Pontos[j]));
                         den *= (float.Parse(input.Pontos[i]) - float.Parse(input.Pontos[j]));
                     }
                 }
-                L[i/2] = "L"+(i/2).ToString()+"(x) = (" + num.Remove(num.Length-1) + ")/(" + den.ToString() +")";
+                L[i/2] = "L"+(i/2).ToString()+"(x) = (" + num.ToString() + ")/(" + den.ToString() +")";
                 funcao += input.Pontos[i+1]+"*L"+ (i / 2).ToString() + "(x) + ";
             }
             funcao = funcao.Remove(funcao.Length - 2);
@@ -240,10 +241,15 @@ namespace WebApplication1.Metodos
             var result = "";
             for (int i = 2; i < input.Pontos.Length; i += 2)
             {
-                var funcao = "S" + (i / 2).ToString() + "(x) = (" + input.Pontos[i - 1] + "*(" + input.Pontos[i] + " - x)" +
-                    " + " + input.Pontos[i + 1] + "*(x - (" + input.Pontos[i - 2] + ")))/(" + (double.Parse(input.Pontos[i]) - double.Parse(input.Pontos[i - 2]))
-                    .ToString() + ")";
-                result += funcao + "\n";
+                var num = (new Polynomial(double.Parse(input.Pontos[i - 1])) *
+                    (new Polynomial(double.Parse(input.Pontos[i])) - new Polynomial(0, 1.0))
+                    + new Polynomial(double.Parse(input.Pontos[i + 1])) * 
+                    (new Polynomial(0, 1.0) - new Polynomial(double.Parse(input.Pontos[i - 2])))).ToString();
+
+                var den = (double.Parse(input.Pontos[i]) - double.Parse(input.Pontos[i - 2]))
+                    .ToString();
+
+                result += "S" + (i / 2).ToString() + "(x) = ("+ num +")/("+ den + ")\n";
             }
             return result;
         }
@@ -252,20 +258,20 @@ namespace WebApplication1.Metodos
         public string Newton(InterpolacaoModel input)
         {
             var n = input.Pontos.Length / 2;
-            var funcao = "P"+n.ToString()+"(x) = ";
+            var f_start = "P"+n.ToString()+"(x) = ";
            
             var vet = new List<int>();
-            var mult = "";
+            var mult = new Polynomial(1.0);
             vet.Add(0);
-            funcao += DiferencaDividida(vet, input.Pontos).ToString();
+            var funcao = new Polynomial(DiferencaDividida(vet, input.Pontos));
             for (int i = 0; i < input.Pontos.Length-2; i+=2)
             {
                 vet.Add(i + 2);
-                mult += "* (x - (" + input.Pontos[i] +")) ";
-                funcao += " + " + ((float)Math.Round(DiferencaDividida(vet, input.Pontos) * 100f) / 100f).ToString() + mult;
+                mult *= (new Polynomial(0, 1.0) - new Polynomial(double.Parse(input.Pontos[i])));
+                funcao += new Polynomial((float)Math.Round(DiferencaDividida(vet, input.Pontos) * 100f) / 100f) * mult;
             }
 
-            return funcao;
+            return funcao.ToString();
         }
 
         public double DiferencaDividida(IEnumerable<int> v, string[] pontos)
